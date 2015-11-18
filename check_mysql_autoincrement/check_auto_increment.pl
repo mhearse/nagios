@@ -160,9 +160,6 @@ sub fetchTables {
     while (my ($table) = $sth->fetchrow_array()) {
         $self->{tables}{$table} = 0;
     }
-
-    use Data::Dumper;
-    print Dumper($self->{tables});
 }
 
 ######################################################
@@ -192,9 +189,7 @@ sub checkAutoIncrementColumns {
                 if ($rec->{Type} =~ /unsigned/i) {
                     $signed = 'unsigned';
                 }
-                # 8/17/2015 Mike O'Meara: Java/JDBC don't have an unsigned type. 
-                # So we will treat all integer types as signed.
-                $signed = 'signed';
+
                 my $float = ($maxrowid / $self->{dt}{$signed}{$datatype}) * 100;
                 my $rounded = int($float + 0.5);
                 $self->{tables}{$table} = $rounded;
