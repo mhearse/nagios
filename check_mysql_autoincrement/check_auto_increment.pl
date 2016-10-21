@@ -74,6 +74,7 @@ sub new {
     $self->{alert} = 'OK';
 
     bless $self, $class;
+    $self->validateArgs();
     return $self;
 }
 
@@ -221,7 +222,6 @@ sub checkAutoIncrementColumns {
 
 # Do the work.
 my $obj = check_auto_increment->new();
-$obj->validateArgs();
 $obj->initMySQL();
 $obj->fetchTables();
 $obj->checkAutoIncrementColumns();
