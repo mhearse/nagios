@@ -82,15 +82,16 @@ sub new {
 sub initMySQL {
 ######################################################
     my $self = shift;
+    my %opts = %{$self->{opts}};
 
     $self->{dbh} = DBI->connect(
         sprintf(
             "DBI:mysql:%s:%s",
-            $self->{opts}{database},
-            $self->{opts}{host},
+            $opts{database},
+            $opts{host},
         ),
-        $self->{opts}{username},
-        $self->{opts}{password},
+        $opts{username},
+        $opts{password},
         $self->{dbiattr},
     ) or die $!;
 }
@@ -167,6 +168,8 @@ sub fetchTables {
 sub checkAutoIncrementColumns {
 ######################################################
     my $self = shift;
+    my %opts = %{$self->{opts}};
+
     for my $table (keys %{$self->{tables}}) {
         my $sth = $self->{dbh}->prepare("DESC $table");
         $sth->execute();
@@ -196,19 +199,19 @@ sub checkAutoIncrementColumns {
                 $self->{tables}{$table} = $rounded;
                 my $message = sprintf(
                     "%s.%s: %s%%  ",
-                    $self->{opts}{database},
+                    $opts{database},
                     $table,
                     $rounded,
                 );
-                if ($self->{opts}{verbose}) {
+                if ($opts{verbose}) {
                     print $message;
                 }
                 if ($self->{alert} ne 'CRITICAL') {
-                    if ($rounded > $self->{opts}{critical}) {
+                    if ($rounded > $opts{critical}) {
                         $self->{alert} = 'CRITICAL';
                         $self->{output} .= $message;
                     }
-                    elsif ($rounded > $self->{opts}{warning}) {
+                    elsif ($rounded > $opts{warning}) {
                         $self->{alert} = 'WARNING';
                         $self->{output} .= $message;
                     }
